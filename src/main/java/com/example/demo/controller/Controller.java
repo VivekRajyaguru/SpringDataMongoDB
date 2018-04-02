@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.model.CustomClass;
+import com.example.demo.model.Salary;
 import com.example.demo.model.User;
+import com.example.demo.service.SalaryService;
 import com.example.demo.service.UserService;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -27,11 +30,13 @@ public class Controller {
 	
 	
 	private UserService userService;
+	private SalaryService salaryService;
 	private GridFsOperations gridFsOperations;
 	@Autowired
-	public Controller(UserService userService, GridFsOperations gridFsOperations) {
+	public Controller(UserService userService, GridFsOperations gridFsOperations, SalaryService salaryService) {
 		this.userService = userService;
 		this.gridFsOperations = gridFsOperations;
+		this.salaryService = salaryService;
 	}
 
 	@RequestMapping(value = "/getUserList", method = RequestMethod.POST)
@@ -77,5 +82,17 @@ public class Controller {
 	public User findByUserName(@PathVariable("name") String name) throws Exception {
 		return userService.findByUserName(name);
 	}
+	
+	
+	@RequestMapping(value = "/salarySave", method = RequestMethod.POST)
+	public String saveSalary(@RequestBody Salary salary) throws Exception {
+		salaryService.saveUserSalary(salary);
+		return "Salary Saved SuccessFully.";
+	}
+	
+	@RequestMapping(value = "/getSalary/{id}", method = RequestMethod.POST)
+	public List<CustomClass> getSalary(@PathVariable("id") String id) throws Exception {
 		
+		return salaryService.getData(id);
+	}
 }
